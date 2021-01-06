@@ -35,6 +35,19 @@ interface Props {
 }
 
 class Cascade extends Component<Props> {
+  static defaultProps: Partial<Props> = {
+    dropdownClassName: undefined,
+    dropdownStyle: undefined,
+    dropdownMenuClassName: undefined,
+    dropdownMenuStyle: undefined,
+    dropdownMenuItemClassName: undefined,
+    dropdownMenuItemStyle: undefined,
+    dropdownSubItemClassName: undefined,
+    dropdownSubItemStyle: undefined,
+    expandTrigger: 'click',
+    onSelect: undefined
+  }
+
   dropdownRef = createRef<HTMLDivElement>();
 
   componentWillUnmount(): void {
@@ -150,12 +163,5 @@ class Cascade extends Component<Props> {
     );
   }
 };
-
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
-Cascade.defaultProps = {
-  expandTrigger: 'click',
-  onSelect: undefined
-}
 
 export default Cascade;
