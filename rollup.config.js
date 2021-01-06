@@ -10,13 +10,11 @@ export default {
   output: [
     {
       file: packageJson.main,
-      format: 'cjs',
-      sourcemap: true
+      format: 'cjs'
     },
     {
       file: packageJson.module,
-      format: 'esm',
-      sourcemap: true
+      format: 'es'
     }
   ],
   plugins: [

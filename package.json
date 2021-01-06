@@ -1,13 +1,14 @@
 {
   "name": "react-dropdown-cascade",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "main": "dist/index.js",
   "module": "dist/index.esm.js",
   "scripts": {
     "start": "react-scripts start",
     "build": "rollup -c",
     "lint": "eslint src/ --ext .js,.jsx,.ts,.tsx",
-    "lint:fix": "npm run lint -- --fix"
+    "lint:fix": "npm run lint -- --fix",
+    "prepublishOnly": "npm run build"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^17.0.0",
