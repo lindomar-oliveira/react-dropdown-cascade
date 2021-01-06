@@ -39,6 +39,9 @@
       ],
       "newlinesBetween": "always"
     }],
+    "max-len": ["error", {
+      "code": 120
+    }],
     "no-multiple-empty-lines": ["error", {
       "max": 1
     }],
