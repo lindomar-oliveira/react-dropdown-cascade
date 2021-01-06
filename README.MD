@@ -1,5 +1,7 @@
 # react-dropdown-cascade
 
+A [React](https://reactjs.org) component inpired by [rc-cascader](https://www.npmjs.com/package/rc-cascader) and without external dependencies.
+
 Installation
 ============
 
