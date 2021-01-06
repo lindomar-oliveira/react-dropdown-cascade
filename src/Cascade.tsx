@@ -21,6 +21,7 @@ export interface Item {
 
 interface Props {
   children: ReactElement;
+  defaultValue?: string;
   dropdownClassName?: string;
   dropdownStyle?: CSSProperties;
   dropdownMenuClassName?: string;
@@ -34,8 +35,13 @@ interface Props {
   onSelect?: (value: string, selectedItems: Item[]) => void;
 }
 
-class Cascade extends Component<Props> {
+interface State {
+  selectedItems: Item[];
+}
+
+class Cascade extends Component<Props, State> {
   static defaultProps: Partial<Props> = {
+    defaultValue: undefined,
     dropdownClassName: undefined,
     dropdownStyle: undefined,
     dropdownMenuClassName: undefined,
@@ -50,8 +56,24 @@ class Cascade extends Component<Props> {
 
   dropdownRef = createRef<HTMLDivElement>();
 
+  state: Readonly<State> = {
+    selectedItems: []
+  }
+
   componentWillUnmount(): void {
     document.removeEventListener('click', this.onClickOutside);
+  }
+
+  getLabel = (): string => {
+    const { defaultValue, items } = this.props;
+    const { selectedItems } = this.state;
+    if (selectedItems.length >= 1) {
+      return selectedItems.map(({ label }) => label).join(' > ');
+    }
+    if (!defaultValue) {
+      return '';
+    }
+    return getSelectedItems(items, defaultValue).map(({ label }) => label).join(' > ');
   }
 
   handleClick = (): void => {
@@ -66,7 +88,7 @@ class Cascade extends Component<Props> {
     }
 
     const selectedItems = getSelectedItems(items, item.value);
-    onSelect(selectedItems.slice(-1)[0].value, selectedItems);
+    this.setState({ selectedItems }, () => onSelect(selectedItems.slice(-1)[0].value, selectedItems));
   }
 
   onClickOutside = (e: MouseEvent): void => {
@@ -154,8 +176,9 @@ class Cascade extends Component<Props> {
           style={dropdownStyle}
         >
           {cloneElement(children, {
+            onClick: expandTrigger === 'click' ? this.handleClick : undefined,
             readOnly: true,
-            onClick: expandTrigger === 'click' ? this.handleClick : undefined
+            value: this.getLabel()
           })}
           {this.renderItems(items)}
         </div>
