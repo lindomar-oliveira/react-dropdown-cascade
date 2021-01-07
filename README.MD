@@ -1,6 +1,6 @@
 # react-dropdown-cascade
 
-A [React](https://reactjs.org) component inpired by [rc-cascader](https://www.npmjs.com/package/rc-cascader) and without external dependencies.
+A [React](https://reactjs.org) component inpired by [rc-cascader](https://www.npmjs.com/package/rc-cascader), without external dependencies and styled like [material design](https://material.io/design).
 
 Installation
 ============
@@ -98,31 +98,23 @@ API
 
 Props
 
-| Prop                      | Type                                            | Required | Default   | Description                                    |
-|---------------------------|-------------------------------------------------|----------|-----------|------------------------------------------------|
-| defaultValue              | string                                          | no       | undefined | Initial value                                   |
-| dropdownClassName         | string                                          | no       | undefined | The additional className of dropdown           |
-| dropdownStyle             | CSSProperties                                   | no       | undefined | The additional style of dropdown               |
-| dropdownMenuClassName     | string                                          | no       | undefined | The additional className of dropdown menu      |
-| dropdownMenuStyle         | CSSProperties                                   | no       | undefined | The additional style of dropdown menu          |
-| dropdownMenuItemClassName | string                                          | no       | undefined | The additional className of dropdown menu item |
-| dropdownMenuItemStyle     | CSSProperties                                   | no       | undefined | The additional style of dropdown menu item     |
-| dropdownSubItemClassName  | string                                          | no       | undefined | The additional className of dropdown subitem   |
-| dropdownSubItemStyle      | CSSProperties                                   | no       | undefined | The additional style of dropdown subitem       |
-| expandTrigger             | "click" \| "hover"                              | no       | "click"   | Trigger that shows the dropdown                |
-| items                     | Item[]                                          | **yes**  |           | The data for cascade                           |
-| onSelect                  | (value: string, selectedItems: Item[]) => void; | no       | undefined | Callback when selecting an item                |
-
-### Item
-
-```ts
-interface Item {
-  value: string;
-  label: string;
-  disabled?: boolean;
-  children?: Item[];
-}
-```
+| Prop                      | Type          | Required | Default                                                  | Description                                                              |
+|---------------------------|---------------|----------|----------------------------------------------------------|--------------------------------------------------------------------------|
+| defaultValue              | string        | no       | undefined                                                | Initial value                                                            |
+| disabled                  | boolean       | no       | false                                                    | Pass disabled to children prop component                                 |
+| dropdownClassName         | string        | no       | undefined                                                | The additional className of dropdown                                     |
+| dropdownStyle             | CSSProperties | no       | undefined                                                | The additional style of dropdown                                         |
+| dropdownMenuClassName     | string        | no       | undefined                                                | The additional className of dropdown menu                                |
+| dropdownMenuStyle         | CSSProperties | no       | undefined                                                | The additional style of dropdown menu                                    |
+| dropdownMenuItemClassName | string        | no       | undefined                                                | The additional className of dropdown menu item                           |
+| dropdownMenuItemStyle     | CSSProperties | no       | undefined                                                | The additional style of dropdown menu item                               |
+| dropdownSubItemClassName  | string        | no       | undefined                                                | The additional className of dropdown subitem                             |
+| dropdownSubItemStyle      | CSSProperties | no       | undefined                                                | The additional style of dropdown subitem                                 |
+| expandTrigger             | string        | no       | 'click'                                                  | Trigger that shows the dropdown                                          |
+| fieldNames                | object        | no       | { value: 'value', label: 'label', children: 'children' } | Custom field name for label and value and children                       |
+| items                     | array         | **yes**  |                                                          | The data for cascade                                                     |
+| onSelect                  | function      | no       | undefined                                                | Callback with selected value and as 2nd param the items without children |
+| separatorIcon             | string        | no       | ' > '                                                    | Customize the separator when join path labels until selection            |
 
 License
 =======
