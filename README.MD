@@ -19,7 +19,7 @@ Usage
 =======
 
 ```jsx
-import React from 'react';
+import React, { useState } from 'react';
 import DropdownCascade from 'react-dropdown-cascade';
 
 const items = [
@@ -73,16 +73,26 @@ const items = [
 ];
 
 export default function App() {
+  const [dropdownValue, setDropdownValue] = useState();
+
   return (
     <>
       <h1 style={{ margin: 15 }}>react-dropdown-cascade</h1>
       <DropdownCascade
-        dropdownStyle={{ margin: '5px 20px 15px 20px' }}
+        customStyles={{
+          dropdown: {
+            style: {
+              margin: '5px 20px 15px 20px'
+            }
+          }
+        }}
         items={items}
-        onSelect={(value, selectedItems) => console.log(value, selectedItems)}
-      >
-        <input placeholder="Click here" style={{ height: 24, width: 300 }} />
-      </DropdownCascade>
+        onSelect={(value, selectedItems) => {
+          console.log(value, selectedItems);
+          setDropdownValue(value);
+        }}
+        value={dropdownValue}
+      />
     </>
   );
 }
@@ -98,23 +108,18 @@ API
 
 Props
 
-| Prop                      | Type          | Required | Default                                                  | Description                                                              |
-|---------------------------|---------------|----------|----------------------------------------------------------|--------------------------------------------------------------------------|
-| defaultValue              | string        | no       | undefined                                                | Initial value                                                            |
-| disabled                  | boolean       | no       | false                                                    | Pass disabled to children prop component                                 |
-| dropdownClassName         | string        | no       | undefined                                                | The additional className of dropdown                                     |
-| dropdownStyle             | CSSProperties | no       | undefined                                                | The additional style of dropdown                                         |
-| dropdownMenuClassName     | string        | no       | undefined                                                | The additional className of dropdown menu                                |
-| dropdownMenuStyle         | CSSProperties | no       | undefined                                                | The additional style of dropdown menu                                    |
-| dropdownMenuItemClassName | string        | no       | undefined                                                | The additional className of dropdown menu item                           |
-| dropdownMenuItemStyle     | CSSProperties | no       | undefined                                                | The additional style of dropdown menu item                               |
-| dropdownSubItemClassName  | string        | no       | undefined                                                | The additional className of dropdown subitem                             |
-| dropdownSubItemStyle      | CSSProperties | no       | undefined                                                | The additional style of dropdown subitem                                 |
-| expandTrigger             | string        | no       | 'click'                                                  | Trigger that shows the dropdown                                          |
-| fieldNames                | object        | no       | { value: 'value', label: 'label', children: 'children' } | Custom field name for label and value and children                       |
-| items                     | array         | **yes**  |                                                          | The data for cascade                                                     |
-| onSelect                  | function      | no       | undefined                                                | Callback with selected value and as 2nd param the items without children |
-| separatorIcon             | string        | no       | ' > '                                                    | Customize the separator when join path labels until selection            |
+| Prop                      | Type                | Required | Default                                                  | Description                                                              |
+|---------------------------|---------------------|----------|----------------------------------------------------------|--------------------------------------------------------------------------|
+| customInput               | Component Reference | no       | input                                                    | This allow supporting custom input                                       |
+| customInputProps          | boolean             | no       | false                                                    | Additional props for custom input                                        |
+| customStyles              | object              | no       | false                                                    | Custom styles                                                            |
+| disabled                  | boolean             | no       | false                                                    | Pass disabled to input                                                   |
+| expandTrigger             | string              | no       | 'click'                                                  | Trigger that shows the dropdown                                          |
+| fieldNames                | object              | no       | { value: 'value', label: 'label', children: 'children' } | Custom field names for label and value and children                      |
+| items                     | array               | **yes**  |                                                          | The cascade items                                                        |
+| onSelect                  | function            | no       | undefined                                                | Callback with selected value and as 2nd param the items without children |
+| separatorIcon             | string              | no       | ' > '                                                    | Custom the separator when path labels join until selection               |
+| value                     | string              | no       | undefined                                                | The cascade value                                                        |
 
 License
 =======
