@@ -1,6 +1,6 @@
 {
   "name": "react-dropdown-cascade",
-  "version": "1.1.0",
+  "version": "2.0.0",
   "files": [
     "dist/"
   ],
@@ -17,8 +17,8 @@
     "@rollup/plugin-commonjs": "^17.0.0",
     "@types/react": "^17.0.0",
     "@types/react-dom": "^17.0.0",
-    "@typescript-eslint/eslint-plugin": "^4.12.0",
-    "@typescript-eslint/parser": "^4.12.0",
+    "@typescript-eslint/eslint-plugin": "^4.13.0",
+    "@typescript-eslint/parser": "^4.13.0",
     "eslint": "^7.17.0",
     "eslint-config-airbnb-typescript": "^12.0.0",
     "eslint-config-prettier": "^7.1.0",

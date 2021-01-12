@@ -1,16 +1,10 @@
+/* eslint-disable react/jsx-props-no-spreading */
 /* eslint-disable react/no-array-index-key */
 
-import React, {
-  cloneElement,
-  Component,
-  createRef,
-  CSSProperties,
-  ReactElement,
-  ReactNode
-} from 'react';
+import React from 'react';
 
 import styles from './Cascade.module.css';
-import { classNames } from './utils';
+import { classNames } from './helpers';
 
 interface FieldNames {
   value: string;
@@ -19,8 +13,8 @@ interface FieldNames {
 }
 
 interface Item {
-  value?: string;
-  label?: string;
+  value?: string | number;
+  label?: React.ReactText;
   disabled?: boolean;
   children?: Item[];
   [key: string]: any;
@@ -33,29 +27,36 @@ interface NormalizeItem extends Item {
 }
 
 interface Props {
-  children: ReactElement;
-  defaultValue?: string;
+  customInput?: React.ComponentType<any>;
+  customInputProps?: { [key: string]: any }; // Generic Object;
+  customStyles?: {
+    dropdown?: {
+      className?: string;
+      style?: React.CSSProperties;
+    }
+    dropdownMenu?: {
+      className?: string;
+      style?: React.CSSProperties;
+    };
+    dropdownMenuItem?: {
+      className?: string;
+      style?: React.CSSProperties;
+    };
+    dropdownSubitem?: {
+      className?: string;
+      style?: React.CSSProperties;
+    };
+  };
   disabled?: boolean;
-  dropdownClassName?: string;
-  dropdownStyle?: CSSProperties;
-  dropdownMenuClassName?: string;
-  dropdownMenuStyle?: CSSProperties;
-  dropdownMenuItemClassName?: string;
-  dropdownMenuItemStyle?: CSSProperties;
-  dropdownSubItemClassName?: string;
-  dropdownSubItemStyle?: CSSProperties;
   expandTrigger?: 'click' | 'hover';
   fieldNames?: FieldNames;
   items: Item[];
   onSelect?: (value: string, selectedItems: Omit<Item, 'children'>[]) => void;
   separatorIcon?: string;
+  value: string;
 }
 
-interface State {
-  selectedItems: Item[];
-}
-
-class Cascade extends Component<Props, State> {
+class Cascade extends React.Component<Props> {
   static defaultProps: Partial<Props> = {
     disabled: false,
     expandTrigger: 'click',
@@ -64,38 +65,14 @@ class Cascade extends Component<Props, State> {
       label: 'label',
       children: 'children'
     },
+    items: [],
     separatorIcon: ' > '
   }
 
-  dropdownRef = createRef<HTMLDivElement>();
-
-  state: Readonly<State> = {
-    selectedItems: []
-  }
+  dropdownRef = React.createRef<HTMLDivElement>();
 
   componentWillUnmount(): void {
     document.removeEventListener('click', this.onClickOutside);
-  }
-
-  getLabel = (): string => {
-    const {
-      defaultValue,
-      fieldNames,
-      items,
-      separatorIcon
-    } = this.props;
-    const { selectedItems } = this.state;
-    if (selectedItems.length >= 1) {
-      return selectedItems
-        .map((item) => item[fieldNames.label])
-        .join(separatorIcon);
-    }
-    if (!defaultValue) {
-      return '';
-    }
-    return this.getSelectedItems(items, defaultValue)
-      .map((item) => item[fieldNames.label])
-      .join(separatorIcon);
   }
 
   getSelectedItems = (items: Item[], selectedValue: string): Omit<Item, 'children'>[] => {
@@ -129,6 +106,22 @@ class Cascade extends Component<Props, State> {
     return selectedItems;
   }
 
+  getValue = (): string | undefined => {
+    const {
+      fieldNames,
+      items,
+      separatorIcon,
+      value
+    } = this.props;
+    if (value) {
+      const selectedItems = this.getSelectedItems(items, value);
+      return selectedItems
+        .map((item) => item[fieldNames.label])
+        .join(separatorIcon);
+    }
+    return undefined;
+  }
+
   handleClick = (): void => {
     document.getElementsByClassName(styles.dropdownMenu)[0].classList.add(styles.show);
     document.addEventListener('click', this.onClickOutside);
@@ -136,18 +129,14 @@ class Cascade extends Component<Props, State> {
 
   handleSelect = (item: Item): void => {
     const { fieldNames, items, onSelect } = this.props;
-    if (!onSelect || item.disabled) {
-      return;
-    }
-
+    if (!onSelect || item.disabled) return;
     const selectedItems = this.getSelectedItems(items, item[fieldNames.value]);
-    this.setState({ selectedItems }, () => onSelect(selectedItems.slice(-1)[0][fieldNames.value], selectedItems));
+    onSelect(selectedItems.slice(-1)[0][fieldNames.value], selectedItems);
+    this.hideDropdownMenu();
   }
 
-  onClickOutside = (e: MouseEvent): void => {
-    if(!this.dropdownRef.current.contains(e.target as Node)) {
-      document.getElementsByClassName(styles.dropdownMenu)[0].classList.remove(styles.show);
-    }
+  hideDropdownMenu = (): void => {
+    document.getElementsByClassName(styles.dropdownMenu)[0].classList.remove(styles.show);
   }
 
   normalizeItem = (item: Item): NormalizeItem => {
@@ -170,14 +159,28 @@ class Cascade extends Component<Props, State> {
     }
   }
 
-  renderItems = (items: Item[]): ReactNode => {
+  onClickOutside = (e: MouseEvent): void => {
+    if (!this.dropdownRef.current.contains(e.target as Node)) {
+      this.hideDropdownMenu();
+    }
+  }
+
+  renderItems = (items: Item[]): JSX.Element => {
     const {
-      dropdownMenuClassName,
-      dropdownMenuStyle,
-      dropdownMenuItemClassName,
-      dropdownMenuItemStyle,
-      dropdownSubItemClassName,
-      dropdownSubItemStyle
+      customStyles: {
+        dropdownMenu: {
+          className: dropdownMenuClassName,
+          style: dropdownMenuStyle
+        } = { className: undefined, style: undefined },
+        dropdownMenuItem: {
+          className: dropdownMenuItemClassName,
+          style: dropdownMenuItemStyle
+        } = { className: undefined, style: undefined },
+        dropdownSubitem: {
+          className: dropdownSubitemClassName,
+          style: dropdownSubitemStyle
+        } = { className: undefined, style: undefined }
+      }
     } = this.props;
 
     return (
@@ -202,12 +205,12 @@ class Cascade extends Component<Props, State> {
                 <li
                   className={classNames({
                     [styles.dropdownMenuItem]: true,
-                    [styles.withSubItem]: true,
-                    [dropdownSubItemClassName]: Boolean(dropdownSubItemClassName),
+                    [styles.withSubitem]: true,
+                    [dropdownSubitemClassName]: Boolean(dropdownSubitemClassName),
                     [styles.disabled]: disabled
                   })}
                   key={`${index}-${value}`}
-                  style={dropdownSubItemStyle}
+                  style={dropdownSubitemStyle}
                 >
                   {label}
                   {this.renderItems(children)}
@@ -234,12 +237,33 @@ class Cascade extends Component<Props, State> {
     );
   }
 
+  renderInput = (): JSX.Element => {
+    const {
+      customInput: CustomInput,
+      customInputProps,
+      disabled,
+      expandTrigger
+    } = this.props;
+
+    const commonProps = {
+      disabled,
+      onClick: expandTrigger === 'click' ? this.handleClick : undefined,
+      readOnly: true,
+      value: this.getValue()
+    };
+
+    if (CustomInput) return (<CustomInput {...commonProps} {...customInputProps} />);
+    return (<input {...commonProps} />);
+  }
+
   render(): JSX.Element {
     const {
-      children,
-      disabled,
-      dropdownClassName,
-      dropdownStyle,
+      customStyles: {
+        dropdown: {
+          className: dropdownClassName,
+          style: dropdownStyle
+        }
+      },
       expandTrigger,
       items
     } = this.props;
@@ -249,18 +273,13 @@ class Cascade extends Component<Props, State> {
         aria-hidden
         className={classNames({
           [styles.dropdown]: true,
-          [styles.dropdownOnHover]: expandTrigger === 'hover',
-          [dropdownClassName]: Boolean(dropdownClassName)
+          [dropdownClassName]: Boolean(dropdownClassName),
+          [styles.dropdownOnHover]: expandTrigger === 'hover'
         })}
         ref={this.dropdownRef}
         style={dropdownStyle}
       >
-        {cloneElement(children, {
-          disabled,
-          onClick: expandTrigger === 'click' ? this.handleClick : undefined,
-          readOnly: true,
-          value: this.getLabel()
-        })}
+        {this.renderInput()}
         {this.renderItems(items)}
       </div>
     );

@@ -66,13 +66,13 @@
   display: block;
 }
 
-.withSubItem {
+.withSubitem {
   cursor: default;
   display: flex;
   justify-content: space-between;
 }
 
-.withSubItem:after {
+.withSubitem:after {
   border: solid #000;
   border-width: 0 1.5px 1.5px 0;
   content: "";
